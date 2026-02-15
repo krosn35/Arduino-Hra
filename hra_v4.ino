@@ -10,7 +10,7 @@ int lok = -1;
 int wipe = 0;
 
 unsigned long lastFallTime = 0;
-const unsigned long fallInterval = pad; //delka pad
+unsigned long fallInterval = pad; //delka pad
 
 void setup() {
   led.begin(12,11,10,1); // 12 din 11 clk 10 cs
@@ -50,7 +50,7 @@ void loop() {
   else {
     led.borrar();
     led.escribirFraseScroll("GAME OVER", 100);
-    
+
   }
   wipe--;
 }
@@ -106,7 +106,7 @@ void nd() {
     }
   }
   if (y == 0 || y == 1) {
-    if (x == 1 & ag == 0){
+    if (x == 1 && ag == 0){
       heal--;
       ag++;
       Serial.println("nd+y=1");
@@ -114,7 +114,7 @@ void nd() {
       delay(50);
     }
     if (y == 0) {
-      if (x - 1 == 1 & ag == 0){
+      if (x - 1 == 1 && ag == 0){
         heal--;
         Serial.println("nd+y=0");
       }
@@ -146,7 +146,7 @@ void rd() {
     }
   }
   if (y == 0 || y == 1) {
-    if (x == 2 & ag){
+    if (x == 2 && ag == 0){
       heal--;
       ag++;
       Serial.println("rd+y=1");
@@ -154,7 +154,7 @@ void rd() {
       delay(50);
     }
     if (y == 0) {
-      if (x - 1 == 2 & ag == 0 || x + 1 == 2 & ag == 0){
+      if (x - 1 == 2 && ag == 0 || x + 1 == 2 && ag == 0){
         heal--;
         Serial.println("rd+y=0");
       }
@@ -186,7 +186,7 @@ void fo() {
     }
   }
   if (y == 0 || y == 1) {
-    if (x == 3 & ag){
+    if (x == 3 && ag == 0){
       heal--;
       ag++;
       Serial.println("fo+y=1");
@@ -194,7 +194,7 @@ void fo() {
       delay(50);
     }
     if (y == 0) {
-      if (x - 1 == 3 & ag == 0 || x + 1 == 3 & ag == 0){
+      if (x - 1 == 3 && ag == 0 || x + 1 == 3 && ag == 0){
         heal--;
         Serial.println("fo+y=0");
       }
@@ -226,7 +226,7 @@ void fif() {
     }
   }
   if (y == 0 || y == 1) {
-    if (x == 4 & ag){
+    if (x == 4 && ag == 0){
       heal--;
       ag++;
       Serial.println("fif+y=1");
@@ -234,7 +234,7 @@ void fif() {
       delay(50);
     }
     if (y == 0) {
-      if (x - 1 == 4 & ag == 0 || x + 1 == 4 & ag == 0){
+      if (x - 1 == 4 && ag == 0 || x + 1 == 4 && ag == 0){
         heal--;
         Serial.println("fif+y=0");
       }
@@ -266,7 +266,7 @@ void ses() {
     }
   }
   if (y == 0 || y == 1) {
-    if (x == 5 & ag){
+    if (x == 5 && ag == 0){
       heal--;
       ag++;
       Serial.println("ses+y=1");
@@ -274,7 +274,7 @@ void ses() {
       delay(50);
     }
     if (y == 0) {
-      if (x - 1 == 5 & ag == 0 || x + 1 == 5 & ag == 0){
+      if (x - 1 == 5 && ag == 0 || x + 1 == 5 && ag == 0){
         heal--;
         Serial.println("ses+y=0");
       }
@@ -306,7 +306,7 @@ void sed() {
     }
   }
   if (y == 0 || y == 1) {
-    if (x == 6 & ag){
+    if (x == 6 && ag == 0){
       heal--;
       ag++;
       Serial.println("sed+y=1");
@@ -314,7 +314,7 @@ void sed() {
       delay(50);
     }
     if (y == 0) {
-      if (x - 1 == 6 & ag == 0 || x + 1 == 6 & ag == 0){
+      if (x - 1 == 6 && ag == 0 || x + 1 == 6 && ag == 0){
         heal--;
         Serial.println("sed+y=0");
       }
@@ -396,6 +396,7 @@ void hra() {
   }
   if (lastState2 == HIGH && state2 == LOW) {
     // schopnost
+
     if (ability == 1){
       wipe = 1;
       
