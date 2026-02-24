@@ -8,6 +8,8 @@ int pad = 200;
 int ability = 0;
 int lok = -1;
 int wipe = 0;
+int pocet = 0;
+bool reset = false;
 
 unsigned long lastFallTime = 0;
 unsigned long fallInterval = pad; //delka pad
@@ -44,311 +46,403 @@ void setup() {
 }
 
 void loop() {
+  if (pocet == 50) {
+    pad = 10000;
+    fallInterval = pad;
+  }
+  if (pocet <= 50 && pocet > 1) {
+    pocet--;
+    reset = true;
+    fr();
+    nd();
+    rd();
+    fo();
+    fif();
+    ses();
+    sed();
+    os();
+  }
+  if (pocet == 1) {
+    reset = false;
+    pad = 200;
+    fallInterval = pad;
+    pocet--;
+  }
   if (heal > 0) {
     hra();
   }
   else {
     led.borrar();
     led.escribirFraseScroll("GAME OVER", 100);
+    digitalWrite(2, LOW);
+    digitalWrite(13, LOW);
+    digitalWrite(6, LOW);
 
   }
-  wipe--;
+  if (wipe > 0) {
+    wipe--;
+  }
+
 }
 
 
 void fr() {
   
   static int y = -1;
-  if (y == -1) {
-    int a = random(1, hard);
-    
-    if (a == 2) {
-      y = 8;
+  if (reset == false) {
+    if (y == -1) {
+      int a = random(1, hard);
+
+      if (a == 2) {
+        y = 8;
+      }
+    }
+    if (wipe == 1) {
+      y = -1;
+    }
+    // padání bloku
+    if (y > -1) {
+      y--;
+      led.setLed(0, 0, y, true);
+      if (y < 7) {
+        led.setLed(0, 0, y + 1, true);
+      }
+    }
+    if (y == 0) {
+      if (x - 1 == 0) {
+        heal--;
+        Serial.println("fr+y=0");
+      }
     }
   }
-  if (wipe == 1) {
-    y = -1;
-  }
-  // padání bloku
-  if (y > -1) {
-    y--;
+  else {
     led.setLed(0, 0, y, true);
-    if (y < 7) {
+    if (y < 7 && y > -1) {
       led.setLed(0, 0, y + 1, true);
-    }
-  }
-  if (y == 0) {
-    if (x - 1 == 0) {
-      heal--;
-      Serial.println("fr+y=0");
     }
   }
 }
 void nd() {
   static int y = -1;
   static int ag = 0;
-  if (y == -1) {
-    int a = random(1, hard);
+  if (reset == false) {
+    if (y == -1) {
+      int a = random(1, hard);
     
-    if (a == 2) {
-      y = 8;
-    }
-  }
-  if (wipe == 1) {
-    y = -1;
-  }
-  // padání bloku
-  if (y > -1) {
-    y--;
-    led.setLed(0, 1, y, true);
-    if (y < 7) {
-      led.setLed(0, 1, y + 1, true);
-    }
-  }
-  if (y == 0 || y == 1) {
-    if (x == 1 && ag == 0){
-      heal--;
-      ag++;
-      Serial.println("nd+y=1");
-      Serial.println(ag);
-      delay(50);
-    }
-    if (y == 0) {
-      if (x - 1 == 1 && ag == 0){
-        heal--;
-        Serial.println("nd+y=0");
+      if (a == 2) {
+        y = 8;
       }
     }
-    if (y == -1){
-      ag = 0;
+    if (wipe == 1) {
+      y = -1;
+    }
+  // padání bloku
+    if (y > -1) {
+      y--;
+      led.setLed(0, 1, y, true);
+      if (y < 7) {
+        led.setLed(0, 1, y + 1, true);
+      }
+    }
+    if (y == 0 || y == 1) {
+      if (x == 1 && ag == 0){
+        heal--;
+        ag++;
+        Serial.println("nd+y=1");
+        Serial.println(ag);
+        delay(50);
+      }
+      if (y == 0) {
+        if (x - 1 == 1 && ag == 0){
+          heal--;
+          Serial.println("nd+y=0");
+        }
+      }
+      if (y == -1){
+        ag = 0;
+      }
+    }
+  }
+  else {
+    led.setLed(0, 1, y, true);
+    if (y < 7 && y > -1) {
+      led.setLed(0, 1, y + 1, true);
     }
   }
 }
 void rd() {
   static int ag = 0;
   static int y = -1;
-  if (y == -1) {
-    int a = random(1, hard);
+  if (reset == false) {
+    if (y == -1) {
+      int a = random(1, hard);
     
-    if (a == 2) {
-      y = 8;
-    }
-  }
-  if (wipe == 1) {
-    y = -1;
-  }
-  // padání bloku
-  if (y > -1) {
-    y--;
-    led.setLed(0, 2, y, true);
-    if (y < 7) {
-      led.setLed(0, 2, y + 1, true);
-    }
-  }
-  if (y == 0 || y == 1) {
-    if (x == 2 && ag == 0){
-      heal--;
-      ag++;
-      Serial.println("rd+y=1");
-      Serial.println(ag);
-      delay(50);
-    }
-    if (y == 0) {
-      if (x - 1 == 2 && ag == 0 || x + 1 == 2 && ag == 0){
-        heal--;
-        Serial.println("rd+y=0");
+      if (a == 2) {
+        y = 8;
       }
     }
-    if (y == -1){
-      ag = 0;
+    if (wipe == 1) {
+      y = -1;
+    }
+  // padání bloku
+    if (y > -1) {
+      y--;
+      led.setLed(0, 2, y, true);
+      if (y < 7) {
+        led.setLed(0, 2, y + 1, true);
+      }
+    }
+    if (y == 0 || y == 1) {
+      if (x == 2 && ag == 0){
+        heal--;
+        ag++;
+        Serial.println("rd+y=1");
+        Serial.println(ag);
+        delay(50);
+      }
+      if (y == 0) {
+        if (x - 1 == 2 && ag == 0 || x + 1 == 2 && ag == 0){
+          heal--;
+          Serial.println("rd+y=0");
+        }
+      }
+      if (y == -1){
+        ag = 0;
+      }
+    }
+  }
+  else {
+    led.setLed(0, 2, y, true);
+    if (y < 7 && y > -1) {
+      led.setLed(0, 2, y + 1, true);
     }
   }
 }
 void fo() {
   static int y = -1;
   static int ag = 0;
-  if (y == -1) {
-    int a = random(1, hard);
+  if (reset == false) {
+    if (y == -1) {
+      int a = random(1, hard);
     
-    if (a == 2) {
-      y = 8;
-    }
-  }
-  if (wipe == 1) {
-    y = -1;
-  }
-  // padání bloku
-  if (y > -1) {
-    y--;
-    led.setLed(0, 3, y, true);
-    if (y < 7) {
-      led.setLed(0, 3, y + 1, true);
-    }
-  }
-  if (y == 0 || y == 1) {
-    if (x == 3 && ag == 0){
-      heal--;
-      ag++;
-      Serial.println("fo+y=1");
-      Serial.println(ag);
-      delay(50);
-    }
-    if (y == 0) {
-      if (x - 1 == 3 && ag == 0 || x + 1 == 3 && ag == 0){
-        heal--;
-        Serial.println("fo+y=0");
+      if  (a == 2) {
+        y = 8;
       }
     }
-    if (y == -1){
-      ag = 0;
+    if (wipe == 1) {
+      y = -1;
+    }
+  // padání bloku
+    if (y > -1) {
+      y--;
+      led.setLed(0, 3, y, true);
+      if (y < 7) {
+        led.setLed(0, 3, y + 1, true);
+      }
+    }
+    if (y == 0 || y == 1) {
+      if (x == 3 && ag == 0){
+        heal--;
+        ag++;
+        Serial.println("fo+y=1");
+        Serial.println(ag);
+        delay(50);
+      }
+      if (y == 0) {
+        if (x - 1 == 3 && ag == 0 || x + 1 == 3 && ag == 0){
+          heal--;
+          Serial.println("fo+y=0");
+        }
+      }
+      if (y == -1){
+        ag = 0;
+      }
+    }
+  }
+  else {
+    led.setLed(0, 3, y, true);
+    if (y < 7 && y > -1) {
+      led.setLed(0, 3, y + 1, true);
     }
   }
 }
 void fif() {
   static int y = -1;
   static int ag = 0;
-  if (y == -1) {
-    int a = random(1, hard);
+  if (reset == false) {
+    if (y == -1) {
+      int a = random(1, hard);
     
-    if (a == 2) {
-      y = 8;
-    }
-  }
-  if (wipe == 1) {
-    y = -1;
+      if (a == 2) {
+        y = 8;
+      }
+    } 
+    if (wipe == 1) {
+      y = -1;
   }
   // padání bloku
-  if (y > -1) {
-    y--;
-    led.setLed(0,4, y, true);
-    if (y < 7) {
-      led.setLed(0,4, y + 1, true);
-    }
-  }
-  if (y == 0 || y == 1) {
-    if (x == 4 && ag == 0){
-      heal--;
-      ag++;
-      Serial.println("fif+y=1");
-      Serial.println(ag);
-      delay(50);
-    }
-    if (y == 0) {
-      if (x - 1 == 4 && ag == 0 || x + 1 == 4 && ag == 0){
-        heal--;
-        Serial.println("fif+y=0");
+    if (y > -1) {
+      y--;
+      led.setLed(0,4, y, true);
+      if (y < 7) {
+        led.setLed(0,4, y + 1, true);
       }
     }
-    if (y == -1){
-      ag = 0;
+    if (y == 0 || y == 1) {
+      if (x == 4 && ag == 0){
+        heal--;
+        ag++;
+        Serial.println("fif+y=1");
+        Serial.println(ag);
+        delay(50);
+      }
+      if (y == 0) {
+        if (x - 1 == 4 && ag == 0 || x + 1 == 4 && ag == 0){
+          heal--;
+          Serial.println("fif+y=0");
+        }
+      }
+      if (y == -1){
+        ag = 0;
+      }
+    }
+  }
+  else {
+    led.setLed(0, 4, y, true);
+    if (y < 7 && y > -1) {
+      led.setLed(0, 4, y + 1, true);
     }
   }
 }
 void ses() {
   static int y = -1;
   static int ag = 0;
-  if (y == -1) {
-    int a = random(1, hard);
+  if (reset == false) {
+    if (y == -1) {
+      int a = random(1, hard);
     
-    if (a == 2) {
-      y = 8;
-    }
-  }
-  if (wipe == 1) {
-    y = -1;
-  }
-  // padání bloku
-  if (y > -1) {
-    y--;
-    led.setLed(0,5, y, true);
-    if (y < 7) {
-      led.setLed(0,5, y + 1, true);
-    }
-  }
-  if (y == 0 || y == 1) {
-    if (x == 5 && ag == 0){
-      heal--;
-      ag++;
-      Serial.println("ses+y=1");
-      Serial.println(ag);
-      delay(50);
-    }
-    if (y == 0) {
-      if (x - 1 == 5 && ag == 0 || x + 1 == 5 && ag == 0){
-        heal--;
-        Serial.println("ses+y=0");
+      if (a == 2) {
+        y = 8;
       }
     }
-    if (y == -1){
-      ag = 0;
+    if (wipe == 1) {
+      y = -1;
+    }
+  // padání bloku
+    if (y > -1) {
+      y--;
+      led.setLed(0,5, y, true);
+      if (y < 7) {
+        led.setLed(0,5, y + 1, true);
+      }
+    }
+    if (y == 0 || y == 1) {
+      if (x == 5 && ag == 0){
+        heal--;
+        ag++;
+        Serial.println("ses+y=1");
+        Serial.println(ag);
+        delay(50);
+      }
+      if (y == 0) {
+        if (x - 1 == 5 && ag == 0 || x + 1 == 5 && ag == 0){
+          heal--;
+          Serial.println("ses+y=0");
+        }
+      }
+      if (y == -1){
+        ag = 0;
+      }
+    }
+  }
+  else {
+    led.setLed(0, 5, y, true);
+    if (y < 7 && y > -1) {
+      led.setLed(0, 5, y + 1, true);
     }
   }
 }
 void sed() {
   static int y = -1;
   static int ag = 0;
-  if (y == -1) {
-    int a = random(1, hard);
+  if (reset == false) {
+    if (y == -1) {
+      int a = random(1, hard);
     
-    if (a == 2) {
-      y = 8;
-    }
-  }
-  if (wipe == 1) {
-    y = -1;
-  }
-  // padání bloku
-  if (y > -1) {
-    y--;
-    led.setLed(0,6, y, true);
-    if (y < 7) {
-      led.setLed(0,6, y + 1, true);
-    }
-  }
-  if (y == 0 || y == 1) {
-    if (x == 6 && ag == 0){
-      heal--;
-      ag++;
-      Serial.println("sed+y=1");
-      Serial.println(ag);
-      delay(50);
-    }
-    if (y == 0) {
-      if (x - 1 == 6 && ag == 0 || x + 1 == 6 && ag == 0){
-        heal--;
-        Serial.println("sed+y=0");
+      if (a == 2) {
+        y = 8;
       }
     }
-    if (y == -1){
-      ag = 0;
+    if (wipe == 1) {
+      y = -1;
+    }
+  // padání bloku
+    if (y > -1) {
+      y--;
+      led.setLed(0,6, y, true);
+      if (y < 7) {
+        led.setLed(0,6, y + 1, true);
+      }
+    }
+    if (y == 0 || y == 1) {
+      if (x == 6 && ag == 0){
+        heal--;
+        ag++;
+        Serial.println("sed+y=1");
+        Serial.println(ag);
+        delay(50);
+      }
+      if (y == 0) {
+        if (x - 1 == 6 && ag == 0 || x + 1 == 6 && ag == 0){
+          heal--;
+          Serial.println("sed+y=0");
+        }
+      }
+      if (y == -1){
+        ag = 0;
+      }
+    }
+  }
+  else {
+    led.setLed(0, 6, y, true);
+    if (y < 7 && y > -1) {
+      led.setLed(0, 6, y + 1, true);
     }
   }
 }
 void os() {
   static int y = -1;
   static int ag = 0;
-  if (y == -1) {
-    int a = random(1, hard);
+  if (reset == false) {
+    if (y == -1) {
+      int a = random(1, hard);
     
-    if (a == 2) {
-      y = 8;
+      if (a == 2) {
+        y = 8;
+      }
     }
-  }
-  if (wipe == 1) {
-    y = -1;
-  }
+    if (wipe == 1) {
+      y = -1;
+    }
   // padání bloku
-  if (y > -1) {
-    y--;
-    led.setLed(0,7, y, true);
-    if (y < 7) {
-      led.setLed(0,7, y + 1, true);
+    if (y > -1) {
+      y--;
+      led.setLed(0,7, y, true);
+      if (y < 7) {
+        led.setLed(0,7, y + 1, true);
+      }
+    }
+    if (y == 0) {
+      if (x + 1 == 7) {
+        heal--;
+        Serial.println("os+y=0");
+      }
     }
   }
-  if (y == 0) {
-    if (x + 1 == 7) {
-      heal--;
-      Serial.println("os+y=0");
+  else {
+    led.setLed(0, 7, y, true);
+    if (y < 7 && y > -1) {
+      led.setLed(0, 7, y + 1, true);
     }
   }
 }
@@ -398,13 +492,13 @@ void hra() {
     // schopnost
 
     if (ability == 1){
-      wipe = 1;
-      
+      wipe = 2;
+      Serial.println(wipe);
       ability = 0;
       digitalWrite(13, LOW);
     }
     if (ability == 2) {
-      pad = 10000;
+      pocet = 50;
       ability = 0;
       digitalWrite(2, LOW);
     }
