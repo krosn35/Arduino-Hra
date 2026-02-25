@@ -10,9 +10,16 @@ int lok = -1;
 int wipe = 0;
 int pocet = 0;
 bool reset = false;
+bool gameover = false;
+int score1 = 0;
 
+
+unsigned long celek;
+unsigned long score;
 unsigned long lastFallTime = 0;
 unsigned long fallInterval = pad; //delka pad
+
+char scoreText[10];
 
 void setup() {
   led.begin(12,11,10,1); // 12 din 11 clk 10 cs
@@ -22,7 +29,6 @@ void setup() {
   pinMode(3, INPUT_PULLUP); // button leva
   pinMode(4, INPUT_PULLUP); // button prava
   pinMode(5, INPUT_PULLUP); // ability
-  pinMode(6, OUTPUT); //ability blast
   pinMode(2, OUTPUT); //ability slow
   pinMode(13, OUTPUT); //ability wipe
   pinMode(7, OUTPUT); // led last zivot
@@ -36,16 +42,49 @@ void setup() {
   led.escribirFraseScroll("GAME START", 100);
   delay(1000);
 
-
   led.setLed(0,x - 1,0,true);
   led.setLed(0,x,0,true);
   led.setLed(0,x + 1,0,true);
   led.setLed(0,x,1,true);
 
   randomSeed(analogRead(A0));
+  celek = millis();
 }
-
 void loop() {
+  static bool lastState = HIGH;
+  bool state = digitalRead(3);
+
+  static bool lastState1 = HIGH;
+  bool state1 = digitalRead(4);
+
+  static bool lastState2 = HIGH;
+  bool state2 = digitalRead(5);
+
+  if (lastState == HIGH && state == LOW && x >= 2) {
+    x--;
+  }
+  if (lastState1 == HIGH && state1 == LOW && x <= 5) {
+    x++;
+  }
+  if (lastState2 == HIGH && state2 == LOW) {
+    // schopnost
+
+    if (ability == 1){
+      wipe = 2;
+
+      ability = 0;
+      digitalWrite(13, LOW);
+    }
+    if (ability == 2) {
+      pocet = 50;
+      ability = 0;
+      digitalWrite(2, LOW);
+    }
+  }
+
+  lastState = state;
+  lastState1 = state1;
+  lastState2 = state2;
   if (pocet == 50) {
     pad = 10000;
     fallInterval = pad;
@@ -70,14 +109,13 @@ void loop() {
   }
   if (heal > 0) {
     hra();
+
   }
   else {
-    led.borrar();
-    led.escribirFraseScroll("GAME OVER", 100);
-    digitalWrite(2, LOW);
-    digitalWrite(13, LOW);
-    digitalWrite(6, LOW);
-
+  led.borrar();
+  led.escribirFraseScroll("GAME OVER", 100);
+  digitalWrite(13, LOW);
+  digitalWrite(2, LOW);
   }
   if (wipe > 0) {
     wipe--;
@@ -92,7 +130,6 @@ void fr() {
   if (reset == false) {
     if (y == -1) {
       int a = random(1, hard);
-
       if (a == 2) {
         y = 8;
       }
@@ -111,7 +148,7 @@ void fr() {
     if (y == 0) {
       if (x - 1 == 0) {
         heal--;
-        Serial.println("fr+y=0");
+
       }
     }
   }
@@ -148,14 +185,13 @@ void nd() {
       if (x == 1 && ag == 0){
         heal--;
         ag++;
-        Serial.println("nd+y=1");
-        Serial.println(ag);
+
         delay(50);
       }
       if (y == 0) {
         if (x - 1 == 1 && ag == 0){
           heal--;
-          Serial.println("nd+y=0");
+
         }
       }
       if (y == -1){
@@ -176,7 +212,6 @@ void rd() {
   if (reset == false) {
     if (y == -1) {
       int a = random(1, hard);
-    
       if (a == 2) {
         y = 8;
       }
@@ -196,14 +231,13 @@ void rd() {
       if (x == 2 && ag == 0){
         heal--;
         ag++;
-        Serial.println("rd+y=1");
-        Serial.println(ag);
+
         delay(50);
       }
       if (y == 0) {
         if (x - 1 == 2 && ag == 0 || x + 1 == 2 && ag == 0){
           heal--;
-          Serial.println("rd+y=0");
+
         }
       }
       if (y == -1){
@@ -224,7 +258,6 @@ void fo() {
   if (reset == false) {
     if (y == -1) {
       int a = random(1, hard);
-    
       if  (a == 2) {
         y = 8;
       }
@@ -244,14 +277,13 @@ void fo() {
       if (x == 3 && ag == 0){
         heal--;
         ag++;
-        Serial.println("fo+y=1");
-        Serial.println(ag);
+
         delay(50);
       }
       if (y == 0) {
         if (x - 1 == 3 && ag == 0 || x + 1 == 3 && ag == 0){
           heal--;
-          Serial.println("fo+y=0");
+
         }
       }
       if (y == -1){
@@ -272,7 +304,6 @@ void fif() {
   if (reset == false) {
     if (y == -1) {
       int a = random(1, hard);
-    
       if (a == 2) {
         y = 8;
       }
@@ -292,14 +323,13 @@ void fif() {
       if (x == 4 && ag == 0){
         heal--;
         ag++;
-        Serial.println("fif+y=1");
-        Serial.println(ag);
+
         delay(50);
       }
       if (y == 0) {
         if (x - 1 == 4 && ag == 0 || x + 1 == 4 && ag == 0){
           heal--;
-          Serial.println("fif+y=0");
+
         }
       }
       if (y == -1){
@@ -320,7 +350,6 @@ void ses() {
   if (reset == false) {
     if (y == -1) {
       int a = random(1, hard);
-    
       if (a == 2) {
         y = 8;
       }
@@ -340,14 +369,13 @@ void ses() {
       if (x == 5 && ag == 0){
         heal--;
         ag++;
-        Serial.println("ses+y=1");
-        Serial.println(ag);
+
         delay(50);
       }
       if (y == 0) {
         if (x - 1 == 5 && ag == 0 || x + 1 == 5 && ag == 0){
           heal--;
-          Serial.println("ses+y=0");
+
         }
       }
       if (y == -1){
@@ -368,7 +396,6 @@ void sed() {
   if (reset == false) {
     if (y == -1) {
       int a = random(1, hard);
-    
       if (a == 2) {
         y = 8;
       }
@@ -388,14 +415,13 @@ void sed() {
       if (x == 6 && ag == 0){
         heal--;
         ag++;
-        Serial.println("sed+y=1");
-        Serial.println(ag);
+
         delay(50);
       }
       if (y == 0) {
         if (x - 1 == 6 && ag == 0 || x + 1 == 6 && ag == 0){
           heal--;
-          Serial.println("sed+y=0");
+
         }
       }
       if (y == -1){
@@ -416,7 +442,6 @@ void os() {
   if (reset == false) {
     if (y == -1) {
       int a = random(1, hard);
-    
       if (a == 2) {
         y = 8;
       }
@@ -435,7 +460,7 @@ void os() {
     if (y == 0) {
       if (x + 1 == 7) {
         heal--;
-        Serial.println("os+y=0");
+
       }
     }
   }
@@ -468,55 +493,17 @@ void hra() {
   led.setLed(0,x + 1,0,true);
   led.setLed(0,x,1,true);
 
-
   digitalWrite(9, heal >= 3 ? HIGH : LOW);
   digitalWrite(8, heal >= 2 ? HIGH : LOW);
   digitalWrite(7, heal >= 1 ? HIGH : LOW);
 
-  static bool lastState = HIGH;
-  bool state = digitalRead(3);
 
-  static bool lastState1 = HIGH;
-  bool state1 = digitalRead(4);
-
-  static bool lastState2 = HIGH;
-  bool state2 = digitalRead(5);
-
-  if (lastState == HIGH && state == LOW && x >= 2) {
-    x--;
-  }
-  if (lastState1 == HIGH && state1 == LOW && x <= 5) {
-    x++;
-  }
-  if (lastState2 == HIGH && state2 == LOW) {
-    // schopnost
-
-    if (ability == 1){
-      wipe = 2;
-      Serial.println(wipe);
-      ability = 0;
-      digitalWrite(13, LOW);
-    }
-    if (ability == 2) {
-      pocet = 50;
-      ability = 0;
-      digitalWrite(2, LOW);
-    }
-    if (ability == 3) {
-      ability = 0;
-      digitalWrite(6, LOW);
-    }
-  }
-
-  lastState = state;
-  lastState1 = state1;
-  lastState2 = state2;
 }
 void abilit() {
  if (ability == 0) {
   int a = random(1, 10);
   if (a == 5) {
-    int b = random(1, 4);
+    int b = random(1, 3);
     if ( b == 1) {
       ability = 1;
       digitalWrite(13, HIGH);
@@ -525,11 +512,7 @@ void abilit() {
       ability = 2;
       digitalWrite(2, HIGH);
     }
-    if (b == 3) {
-      ability = 3;
-      digitalWrite(6, HIGH);
-    }
-  Serial.println(ability);
+
   }
  }
 }
