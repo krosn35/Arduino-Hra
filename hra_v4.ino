@@ -22,7 +22,7 @@ unsigned long fallInterval = pad; //delka pad
 char scoreText[10];
 
 void setup() {
-  led.begin(12,11,10,1); // 12 din 11 clk 10 cs
+  led.begin(12,10,11,1); // 12 din 10 clk 11 cs
   Serial.begin(9600);
   led.borrar();
 
@@ -113,13 +113,12 @@ void loop() {
   }
   else {
   led.borrar();
-  led.escribirFraseScroll("GAME OVER", 100);
   digitalWrite(13, LOW);
   digitalWrite(2, LOW);
+  led.escribirFraseScroll("GAME OVER", 100);
+
   }
-  if (wipe > 0) {
-    wipe--;
-  }
+
 
 }
 
@@ -134,8 +133,9 @@ void fr() {
         y = 8;
       }
     }
-    if (wipe == 1) {
+    if (wipe >= 1) {
       y = -1;
+
     }
     // padání bloku
     if (y > -1) {
@@ -170,7 +170,7 @@ void nd() {
         y = 8;
       }
     }
-    if (wipe == 1) {
+    if (wipe >= 1) {
       y = -1;
     }
   // padání bloku
@@ -216,7 +216,7 @@ void rd() {
         y = 8;
       }
     }
-    if (wipe == 1) {
+    if (wipe >= 1) {
       y = -1;
     }
   // padání bloku
@@ -262,7 +262,7 @@ void fo() {
         y = 8;
       }
     }
-    if (wipe == 1) {
+    if (wipe >= 1) {
       y = -1;
     }
   // padání bloku
@@ -308,7 +308,7 @@ void fif() {
         y = 8;
       }
     } 
-    if (wipe == 1) {
+    if (wipe >= 1) {
       y = -1;
   }
   // padání bloku
@@ -354,7 +354,7 @@ void ses() {
         y = 8;
       }
     }
-    if (wipe == 1) {
+    if (wipe >= 1) {
       y = -1;
     }
   // padání bloku
@@ -400,7 +400,7 @@ void sed() {
         y = 8;
       }
     }
-    if (wipe == 1) {
+    if (wipe >= 1) {
       y = -1;
     }
   // padání bloku
@@ -446,7 +446,7 @@ void os() {
         y = 8;
       }
     }
-    if (wipe == 1) {
+    if (wipe >= 1) {
       y = -1;
     }
   // padání bloku
@@ -496,6 +496,10 @@ void hra() {
   digitalWrite(9, heal >= 3 ? HIGH : LOW);
   digitalWrite(8, heal >= 2 ? HIGH : LOW);
   digitalWrite(7, heal >= 1 ? HIGH : LOW);
+  if (wipe > 0) {
+    wipe--;
+
+  }
 
 
 }
