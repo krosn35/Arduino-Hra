@@ -6,16 +6,10 @@ int x = 4;
 int hard = 45;
 int pad = 200;
 int ability = 0;
-int lok = -1;
 int wipe = 0;
 int pocet = 0;
 bool reset = false;
-bool gameover = false;
-int score1 = 0;
 
-
-unsigned long celek;
-unsigned long score;
 unsigned long lastFallTime = 0;
 unsigned long fallInterval = pad; //delka pad
 
