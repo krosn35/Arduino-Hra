@@ -3,17 +3,17 @@ MatrizLed led;
 
 int heal = 3;
 int x = 4;
-int hard = 45;
+int hard = 50;
 int pad = 200;
 int ability = 0;
 int wipe = 0;
 int pocet = 0;
 bool reset = false;
+int odp = 0;
 
 unsigned long lastFallTime = 0;
 unsigned long fallInterval = pad; //delka pad
 
-char scoreText[10];
 
 void setup() {
   led.begin(12,10,11,1); // 12 din 10 clk 11 cs
@@ -42,7 +42,6 @@ void setup() {
   led.setLed(0,x,1,true);
 
   randomSeed(analogRead(A0));
-  celek = millis();
 }
 void loop() {
   static bool lastState = HIGH;
@@ -468,7 +467,13 @@ void os() {
 void hra() {
   delay(100);
   led.borrar();
-
+  if (odp == 0) {
+    hard--;
+    odp = 100;
+  }
+  if (odp != 0 && odp > 0) {
+    odp--;
+  }
   unsigned long currentTime = millis();
   if (currentTime - lastFallTime >= fallInterval) {
     fr();
@@ -499,7 +504,7 @@ void hra() {
 }
 void abilit() {
  if (ability == 0) {
-  int a = random(1, 10);
+  int a = random(1, 50);
   if (a == 5) {
     int b = random(1, 3);
     if ( b == 1) {
